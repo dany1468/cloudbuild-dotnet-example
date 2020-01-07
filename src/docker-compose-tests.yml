@@ -10,7 +10,13 @@ services:
       - "14331:1433"
     volumes:
       - mssql-db:/var/opt/mssql/data
-
+  app:
+    build: .
+    command: "./entrypoint.sh"
+    depends_on:
+      - sql-data-test
+    environment:
+      CONN_STRING: "Server=sql-data-test;Database=Product;User Id=SA;Password=P@55w0rd;"
 volumes:
   mssql-db:
     driver: local
