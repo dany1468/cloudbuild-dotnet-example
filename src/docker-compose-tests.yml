@@ -1,0 +1,16 @@
+version: '3.4'
+
+services:
+  sql-data-test:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    environment:
+      - SA_PASSWORD=P@55w0rd
+      - ACCEPT_EULA=Y
+    ports:
+      - "14331:1433"
+    volumes:
+      - mssql-db:/var/opt/mssql/data
+
+volumes:
+  mssql-db:
+    driver: local
