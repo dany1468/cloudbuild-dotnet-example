@@ -4,4 +4,4 @@
 *.md
 **/bin/
 **/obj/
-
+.idea
