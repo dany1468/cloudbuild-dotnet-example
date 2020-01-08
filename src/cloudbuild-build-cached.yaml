@@ -1,0 +1,31 @@
+steps:
+- id: 'build db'
+  name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'build',
+    '--tag=sqlserver', 
+    '--tag=gcr.io/$PROJECT_ID/sqlserver',
+    '--cache-from', 'gcr.io/$PROJECT_ID/sqlserver:latest',
+    'sqlserver/.',
+  ]
+  waitFor: ['-']
+
+- id: 'build app'
+  name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'build',
+    '--tag=app',
+    '--tag=gcr.io/$PROJECT_ID/app',
+    '--cache-from=gcr.io/$PROJECT_ID/app:latest',
+    '.',
+  ]
+  waitFor: ['-']
+
+- name: 'gcr.io/$PROJECT_ID/docker-compose'
+  args: [ '--file', 'docker-compose-tests-build-cached.yml', 'run', 'app' ]
+
+images:
+- gcr.io/$PROJECT_ID/app
+- gcr.io/$PROJECT_ID/sqlserver
+
+logsBucket: 'gs://${_LOG_STORAGE_BUCKET_NAME}'

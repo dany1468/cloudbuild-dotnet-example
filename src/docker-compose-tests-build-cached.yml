@@ -1,0 +1,24 @@
+version: '3.4'
+
+services:
+  sql-data-test:
+    image: sqlserver
+    container_name: database
+    environment:
+      - SA_PASSWORD=P@55w0rd
+      - ACCEPT_EULA=Y
+    ports:
+      - "14331:1433"
+    volumes:
+      - mssql-db:/var/opt/mssql/data
+  app:
+    image: app
+    container_name: app
+    command: "./entrypoint.sh"
+    depends_on:
+      - sql-data-test
+    environment:
+      CONN_STRING: "Server=sql-data-test;Database=Product;User Id=SA;Password=P@55w0rd;"
+volumes:
+  mssql-db:
+    driver: local
